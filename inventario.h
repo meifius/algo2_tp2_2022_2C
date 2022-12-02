@@ -1,6 +1,8 @@
 #ifndef INVENTARIO_H_
 #define INVENTARIO_H_
 
+typedef struct _inventario_t inventario_t;
+
 /*
 inventario_crear
 
