@@ -18,26 +18,49 @@ Se carga en el inventario una caja con su respectivo nombre.
 No se permite cargar una caja con el mismo nombre.
 En caso de error, devolvera NULL.
 */
-inventario_t *inventario_cargar_caja(inventario_t *inventario, const char *caja_nombre, caja_t *caja);
+inventario_t *inventario_cargar_caja(inventario_t *inventario,
+                                     const char *caja_nombre, caja_t *caja);
 
 /*
 Se combinan dos cajas distintas del inventario.
 Recibe un inventario y el nombre de las 2 cajas existentes del inventario.
 Devuelve NULL en caso de error al combinar las cajas.
 */
-caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre, const char *caja_nombre_combinada);
+caja_t *inventario_combinar_cajas(inventario_t *inventario,
+                                  const char *caja1_nombre,
+                                  const char *caja2_nombre,
+                                  const char *caja_nombre_combinada);
 
 /*
+Recorre cada caja aplicando la funcion f.
+Mientras f devuelva true, seguira recorriendo la caja.
  */
-void inventario_con_cada_caja(inventario_t *inventario, bool (*f)(const char *nombre_caja, void *caja, void *aux), void *aux);
+void inventario_con_cada_caja(inventario_t *inventario,
+                              bool (*f)(const char *nombre_caja,
+                                        void *caja, void *aux),
+                              void *aux);
 
 /*
+Verifica si el el nombre de una caja esta en el inventario.
+Devuelve true si el inventario contiene una caja almacenado con la
+nombre dado o false en caso contrario (o en caso de error).
  */
-bool inventario_contiene_caja(inventario_t *inventario, const char *caja_nombre);
+bool inventario_contiene_caja(inventario_t *inventario,
+                              const char *caja_nombre);
 
 /*
+Recorre la caja aplicando la funcion.
  */
-void inventario_recorrer_caja(inventario_t *inventario, const char *caja_nombre, void (*funcion)(pokemon_t *));
+void inventario_recorrer_caja(inventario_t *inventario,
+                              const char *caja_nombre,
+                              void (*funcion)(pokemon_t *));
+
+/*
+Lista las cajas que encuentre al pokemon.
+Devuelve la cantidad de cajas donde se han encontrado al pokemon.
+ */
+int inventario_buscar_pokemon(inventario_t *inventario,
+                              const char *pokemon_nombre);
 
 /*
 Libera toda la memoria del inventario.

@@ -65,10 +65,97 @@ bool imprimir_caja(const char *nombre_caja, void *caja, void *aux)
         return true;
 }
 
-void mostrar_inventario(inventario_t *inventario)
+void comando_mostrar_inventario(inventario_t *inventario)
 {
         inventario_con_cada_caja(inventario, imprimir_caja, NULL);
         return;
+}
+
+void buscar_caja(inventario_t *inventario, const char *pokemon_nombre)
+{
+        // ha
+}
+
+void comando_carga_otra_caja(inventario_t *inventario)
+{
+        printf("Ingresar nombre del archivo a cargar: \n");
+        char caja_nombre[50];
+        int result = scanf("%s", caja_nombre);
+        printf("Ingreso caja con nombre: %s\n", caja_nombre);
+        if (result != 1 || inventario_contiene_caja(inventario, caja_nombre))
+        {
+                printf("Ya existe una caja con el mismo nombre: %s\n", caja_nombre);
+                return;
+        }
+        int caja_cantidad_cargados = 0;
+        menu_cargar_caja(inventario, caja_nombre, &caja_cantidad_cargados);
+        if (caja_cantidad_cargados == 1)
+                printf("Se cargo exitosamente la caja\n");
+}
+
+void comando_combinar_cajas(inventario_t *inventario)
+{
+        printf("Ingresar nombre de la primera caja a combinar: \n");
+        char caja1_nombre[50];
+        int result = scanf("%s", caja1_nombre);
+        if (result != 1 || !inventario_contiene_caja(inventario, caja1_nombre))
+        {
+                printf("No existe tal caja.\n");
+                return;
+        }
+
+        printf("Ingresar nombre de la primera caja a combinar: \n");
+        char caja2_nombre[50];
+        result = scanf("%s", caja2_nombre);
+        if (result != 1 || !inventario_contiene_caja(inventario, caja2_nombre))
+        {
+                printf("No existe tal caja.\n");
+                return;
+        }
+
+        printf("Ingresar nombre que tendra el resultado de combinar las cajas.\n");
+        char caja_nombre_combinada[50];
+        result = scanf("%s", caja_nombre_combinada);
+        if (result != 1 || inventario_contiene_caja(inventario, caja_nombre_combinada))
+                printf("El nombre de la caja combinada ya existe. Intente de nuevo.\n");
+
+        caja_t *caja_combinada =
+            inventario_combinar_cajas(inventario, caja1_nombre,
+                                      caja2_nombre, caja_nombre_combinada);
+        if (!caja_combinada)
+                printf("No se pudo cargar exitosamente al sistema la caja combinada.\n");
+
+        int pokemones_guardados = caja_guardar_archivo(caja_combinada, caja_nombre_combinada);
+        if (pokemones_guardados <= 0)
+                printf("No se pudo guardar exitosamente en un archivo la caja combinada.\n");
+}
+
+void comando_mostrar_caja(inventario_t *inventario)
+{
+        printf("Ingresar nombre de la caja a listar: \n");
+        char caja_nombre[50];
+        int result = scanf("%s", caja_nombre);
+        if (result != 1 || !inventario_contiene_caja(inventario, caja_nombre))
+        {
+                printf("No existe tal caja.\n");
+                return;
+        }
+        inventario_recorrer_caja(inventario, caja_nombre, imprimir_pokemon);
+}
+
+void comando_buscar_pokemon_en_cajas(inventario_t *inventario)
+{
+        printf("Ingresar nombre del pokemon a encontrar en el inventario: \n");
+        char pokemon_nombre[50];
+        int result = scanf("%s", pokemon_nombre);
+        if (result != 1)
+        {
+                return;
+        }
+        int cajas_contenedoras = inventario_buscar_pokemon(inventario,
+                                                           pokemon_nombre);
+        printf("Se ha encontrado el pokemon %s en %i cajas\n",
+               pokemon_nombre, cajas_contenedoras);
 }
 
 void menu_opciones(inventario_t *inventario, char opcion, bool *hay_que_salir)
@@ -81,76 +168,31 @@ void menu_opciones(inventario_t *inventario, char opcion, bool *hay_que_salir)
 
         if (opcion == 'i' || opcion == 'I')
         {
-                mostrar_inventario(inventario);
+                comando_mostrar_inventario(inventario);
                 return;
         }
 
         if (opcion == 'c' || opcion == 'C')
         {
-                printf("Ingresar nombre del archivo a cargar: \n");
-                char caja_nombre[50];
-                int result = scanf("%s", caja_nombre);
-                printf("Ingreso caja con nombre: %s\n", caja_nombre);
-                if (result != 1 || inventario_contiene_caja(inventario, caja_nombre))
-                {
-                        printf("Ya existe una caja con el mismo nombre: %s\n", caja_nombre);
-                        return;
-                }
-                int caja_cantidad_cargados = 0;
-                menu_cargar_caja(inventario, caja_nombre, &caja_cantidad_cargados);
-                if (caja_cantidad_cargados == 1)
-                        printf("Se cargo exitosamente la caja\n");
+                comando_carga_otra_caja(inventario);
                 return;
         }
 
         if (opcion == 'm' || opcion == 'M')
         {
-                printf("Ingresar nombre de la primera caja a combinar: \n");
-                char caja1_nombre[50];
-                int result = scanf("%s", caja1_nombre);
-                if (result != 1 || !inventario_contiene_caja(inventario, caja1_nombre))
-                {
-                        printf("No existe tal caja.\n");
-                        return;
-                }
-
-                printf("Ingresar nombre de la primera caja a combinar: \n");
-                char caja2_nombre[50];
-                result = scanf("%s", caja2_nombre);
-                if (result != 1 || !inventario_contiene_caja(inventario, caja2_nombre))
-                {
-                        printf("No existe tal caja.\n");
-                        return;
-                }
-
-                printf("Ingresar nombre que tendra el resultado de combinar las cajas.\n");
-                char caja_nombre_combinada[50];
-                result = scanf("%s", caja_nombre_combinada);
-                if (result != 1 || inventario_contiene_caja(inventario, caja_nombre_combinada))
-                        printf("El nombre de la caja combinada ya existe. Intente de nuevo.\n");
-
-                caja_t *aux = inventario_combinar_cajas(inventario, caja1_nombre, caja2_nombre, caja_nombre_combinada);
-                if (!aux)
-                        printf("No se pudo cargar exitosamente la caja combinada.\n");
+                comando_combinar_cajas(inventario);
                 return;
         }
 
         if (opcion == 'd' || opcion == 'D')
         {
-                printf("Ingresar nombre de la caja a listar: \n");
-                char caja_nombre[50];
-                int result = scanf("%s", caja_nombre);
-                if (result != 1 || !inventario_contiene_caja(inventario, caja_nombre))
-                {
-                        printf("No existe tal caja.\n");
-                        return;
-                }
-                inventario_recorrer_caja(inventario, caja_nombre, imprimir_pokemon);
+                comando_mostrar_caja(inventario);
                 return;
         }
 
         if (opcion == 'b' || opcion == 'B')
         {
+                comando_buscar_pokemon_en_cajas(inventario);
                 return;
         }
 }
@@ -176,67 +218,6 @@ int main(int argc, char *argv[])
         }
 
         inventario_destruir(inventario);
-
-        // caja_t *caja = caja_cargar_archivo("./ejemplo/pokemones.csv");
-        // if (!caja)
-        //         return ERROR;
-
-        // printf("-----------------------\n");
-        // printf("Pokemones en la caja:\n\n");
-        // int pokemones_recorridos = caja_recorrer(caja, imprimir_pokemon);
-        // printf("\nPokemones recorridos: %i\n", pokemones_recorridos);
-        // printf("-----------------------\n");
-
-        // printf("\n");
-
-        // printf("-----------------------\n");
-        // int pokemones_guardados = caja_guardar_archivo(caja, "./ejemplo/archivo_prueba.csv");
-        // printf("Cantidad de pokemones guardados con exito en el archivo: %i\n", pokemones_guardados);
-        // printf("-----------------------\n");
-
-        // printf("\n");
-
-        // caja_t *caja1 = caja_cargar_archivo("./ejemplo/pokemones_caja1.csv");
-        // if (!caja1)
-        // {
-        //         caja_destruir(caja);
-        //         return ERROR;
-        // }
-
-        // printf("-----------------------\n");
-        // printf("Pokemones en la caja 1:\n\n");
-        // int pokemones_recorridos_caja1 = caja_recorrer(caja1, imprimir_pokemon);
-        // printf("\nPokemones recorridos: %i\n", pokemones_recorridos_caja1);
-        // printf("-----------------------\n");
-
-        // caja_t *caja2 = caja_cargar_archivo("./ejemplo/pokemones_caja2.csv");
-        // if (!caja2)
-        // {
-        //         caja_destruir(caja);
-        //         caja_destruir(caja1);
-        //         return ERROR;
-        // }
-
-        // printf("-----------------------\n");
-        // printf("Pokemones en la caja 2:\n\n");
-        // int pokemones_recorridos_caja2 = caja_recorrer(caja2, imprimir_pokemon);
-        // printf("\nPokemones recorridos: %i\n", pokemones_recorridos_caja2);
-        // printf("-----------------------\n");
-
-        // caja_t *caja_combinada = caja_combinar(caja1, caja2);
-        // if (!caja_combinada)
-        // {
-        //         caja_destruir(caja);
-        //         caja_destruir(caja1);
-        //         caja_destruir(caja2);
-        //         return ERROR;
-        // }
-
-        // printf("-----------------------\n");
-        // printf("Pokemones en la caja combinada:\n\n");
-        // int pokemones_recorridos_caja_combinada = caja_recorrer(caja_combinada, imprimir_pokemon);
-        // printf("\nPokemones recorridos: %i\n", pokemones_recorridos_caja_combinada);
-        // printf("-----------------------\n");
 
         // caja_destruir(caja);
         // caja_destruir(caja1);
