@@ -1,5 +1,5 @@
-#ifndef INVENTARIO_H_
-#define INVENTARIO_H_
+#ifndef __INVENTARIO_H__
+#define __INVENTARIO_H__
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -12,8 +12,6 @@ Crea inventario con una capacidad inicial determinada por parametro.
 En caso que no se pueda crear devolvera NULL.
 */
 inventario_t *inventario_crear(size_t capacidad);
-
-// inventario_mostrar
 
 /*
 Se carga en el inventario una caja con su respectivo nombre.
@@ -29,7 +27,11 @@ Devuelve NULL en caso de error al combinar las cajas.
 */
 caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre);
 
-// inventario_mostar_caja
+/*
+ */
+void inventario_con_cada_caja(inventario_t *inventario, bool (*f)(const char *nombre_caja, void *caja, void *aux), void *aux);
+
+bool inventario_contiene_caja(inventario_t *inventario, const char *caja_nombre);
 
 // inventario_buscar_caja
 
@@ -38,4 +40,4 @@ Libera toda la memoria del inventario.
 */
 void inventario_destruir(inventario_t *inventario);
 
-#endif // INVENTARIO_H_
+#endif /* __INVENTARIO_H__ */

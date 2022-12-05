@@ -51,8 +51,8 @@ Debera poseer una clave valida.
 Si existe el elemento, se guardara la informacion en anterior.
 Si no se pudo insertar correctamente, devolvera NULL.
 */
-nodo_t *nodo_insertar(nodo_t *nodo, const char *clave, void *elemento,
-                      void **anterior, hash_t *hash);
+nodo_t *nodo_hash_insertar(nodo_t *nodo, const char *clave, void *elemento,
+                           void **anterior, hash_t *hash);
 
 /*
 Clave debe ser un string valido valida
@@ -71,8 +71,8 @@ Se elimina el nodo si la clave es coincidente.
 En caso de eliminacion se modifica la variable elemento_quitado con dicho
 valor. Tambien se libera la memoria del nodo como de la clave.
 */
-nodo_t *nodo_quitar(nodo_t *nodo, const char *clave, void **elemento_quitado,
-                    hash_t *hash);
+nodo_t *nodo_hash_quitar(nodo_t *nodo, const char *clave, void **elemento_quitado,
+                         hash_t *hash);
 
 /*
 Destruye de forma recursiva todos los nodos y clave que tenga.
@@ -154,8 +154,8 @@ size_t funcion_hash(const char *str)
         return hash;
 }
 
-nodo_t *nodo_insertar(nodo_t *nodo, const char *clave, void *elemento,
-                      void **anterior, hash_t *hash)
+nodo_t *nodo_hash_insertar(nodo_t *nodo, const char *clave, void *elemento,
+                           void **anterior, hash_t *hash)
 {
         if (!nodo)
         {
@@ -183,8 +183,8 @@ nodo_t *nodo_insertar(nodo_t *nodo, const char *clave, void *elemento,
                 return nodo;
         }
 
-        nodo->siguiente = nodo_insertar(nodo->siguiente, clave, elemento,
-                                        anterior, hash);
+        nodo->siguiente = nodo_hash_insertar(nodo->siguiente, clave, elemento,
+                                             anterior, hash);
         return nodo;
 }
 
@@ -210,8 +210,8 @@ void *nodo_obtener(nodo_t *nodo, const char *clave)
         return nodo_obtener(nodo->siguiente, clave);
 }
 
-nodo_t *nodo_quitar(nodo_t *nodo, const char *clave, void **elemento_quitado,
-                    hash_t *hash)
+nodo_t *nodo_hash_quitar(nodo_t *nodo, const char *clave, void **elemento_quitado,
+                         hash_t *hash)
 {
         if (!nodo || !clave)
                 return NULL;
@@ -227,8 +227,8 @@ nodo_t *nodo_quitar(nodo_t *nodo, const char *clave, void **elemento_quitado,
                 return nodo_siguiente;
         }
 
-        nodo->siguiente = nodo_quitar(nodo->siguiente, clave, elemento_quitado,
-                                      hash);
+        nodo->siguiente = nodo_hash_quitar(nodo->siguiente, clave, elemento_quitado,
+                                           hash);
         return nodo;
 }
 
@@ -400,8 +400,8 @@ hash_t *hash_insertar(hash_t *hash, const char *clave, void *elemento,
                 return NULL;
 
         size_t hash_posicion = (hash->funcionHash(clave)) % hash->capacidad;
-        nodo_t *nodo = nodo_insertar(hash->pares[hash_posicion], clave,
-                                     elemento, anterior, hash);
+        nodo_t *nodo = nodo_hash_insertar(hash->pares[hash_posicion], clave,
+                                          elemento, anterior, hash);
         if (!nodo)
                 return NULL;
 
@@ -417,8 +417,8 @@ void *hash_quitar(hash_t *hash, const char *clave)
         size_t hash_posicion = (hash->funcionHash(clave)) % hash->capacidad;
 
         void *elemento_quitado = NULL;
-        nodo_t *nodo = nodo_quitar(hash->pares[hash_posicion], clave,
-                                   &elemento_quitado, hash);
+        nodo_t *nodo = nodo_hash_quitar(hash->pares[hash_posicion], clave,
+                                        &elemento_quitado, hash);
 
         hash->pares[hash_posicion] = nodo;
 

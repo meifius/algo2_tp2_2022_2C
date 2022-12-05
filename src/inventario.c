@@ -65,6 +65,19 @@ caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_no
     return caja_combinada;
 }
 
+void inventario_con_cada_caja(inventario_t *inventario, bool (*f)(const char *nombre_caja, void *caja, void *aux), void *aux)
+{
+    if (!inventario)
+        return;
+
+    hash_con_cada_clave(inventario->inventario_hash, f, aux);
+}
+
+bool inventario_contiene_caja(inventario_t *inventario, const char *caja_nombre)
+{
+    return hash_contiene(inventario->inventario_hash, caja_nombre);
+}
+
 void inventario_destruir(inventario_t *inventario)
 {
     if (!inventario)
