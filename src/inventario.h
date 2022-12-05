@@ -25,15 +25,19 @@ Se combinan dos cajas distintas del inventario.
 Recibe un inventario y el nombre de las 2 cajas existentes del inventario.
 Devuelve NULL en caso de error al combinar las cajas.
 */
-caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre);
+caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre, const char *caja_nombre_combinada);
 
 /*
  */
 void inventario_con_cada_caja(inventario_t *inventario, bool (*f)(const char *nombre_caja, void *caja, void *aux), void *aux);
 
+/*
+ */
 bool inventario_contiene_caja(inventario_t *inventario, const char *caja_nombre);
 
-// inventario_buscar_caja
+/*
+ */
+void inventario_recorrer_caja(inventario_t *inventario, const char *caja_nombre, void (*funcion)(pokemon_t *));
 
 /*
 Libera toda la memoria del inventario.

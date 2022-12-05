@@ -46,9 +46,9 @@ inventario_t *inventario_cargar_caja(inventario_t *inventario, const char *caja_
     return inventario;
 }
 
-caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre)
+caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_nombre, const char *caja2_nombre, const char *caja_nombre_combinada)
 {
-    if (!inventario || caja1_nombre || caja2_nombre)
+    if (!inventario || !caja1_nombre || !caja2_nombre || !caja_nombre_combinada)
         return NULL;
 
     if (strcmp(caja1_nombre, caja2_nombre) == 0)
@@ -61,6 +61,8 @@ caja_t *inventario_combinar_cajas(inventario_t *inventario, const char *caja1_no
 
     if (!caja_combinada)
         return NULL;
+
+    hash_insertar(inventario->inventario_hash, caja_nombre_combinada, caja_combinada, NULL);
 
     return caja_combinada;
 }
@@ -76,6 +78,18 @@ void inventario_con_cada_caja(inventario_t *inventario, bool (*f)(const char *no
 bool inventario_contiene_caja(inventario_t *inventario, const char *caja_nombre)
 {
     return hash_contiene(inventario->inventario_hash, caja_nombre);
+}
+
+void inventario_recorrer_caja(inventario_t *inventario, const char *caja_nombre, void (*funcion)(pokemon_t *))
+{
+    if (!inventario || !caja_nombre || !funcion)
+        return;
+
+    caja_t *caja = hash_obtener(inventario->inventario_hash, caja_nombre);
+    if (!caja)
+        return;
+
+    caja_recorrer(caja, funcion);
 }
 
 void inventario_destruir(inventario_t *inventario)

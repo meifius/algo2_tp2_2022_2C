@@ -96,15 +96,56 @@ void menu_opciones(inventario_t *inventario, char opcion, bool *hay_que_salir)
                         printf("Ya existe una caja con el mismo nombre: %s\n", caja_nombre);
                         return;
                 }
+                int caja_cantidad_cargados = 0;
+                menu_cargar_caja(inventario, caja_nombre, &caja_cantidad_cargados);
+                if (caja_cantidad_cargados == 1)
+                        printf("Se cargo exitosamente la caja\n");
+                return;
         }
 
         if (opcion == 'm' || opcion == 'M')
         {
+                printf("Ingresar nombre de la primera caja a combinar: \n");
+                char caja1_nombre[50];
+                int result = scanf("%s", caja1_nombre);
+                if (result != 1 || !inventario_contiene_caja(inventario, caja1_nombre))
+                {
+                        printf("No existe tal caja.\n");
+                        return;
+                }
+
+                printf("Ingresar nombre de la primera caja a combinar: \n");
+                char caja2_nombre[50];
+                result = scanf("%s", caja2_nombre);
+                if (result != 1 || !inventario_contiene_caja(inventario, caja2_nombre))
+                {
+                        printf("No existe tal caja.\n");
+                        return;
+                }
+
+                printf("Ingresar nombre que tendra el resultado de combinar las cajas.\n");
+                char caja_nombre_combinada[50];
+                result = scanf("%s", caja_nombre_combinada);
+                if (result != 1 || inventario_contiene_caja(inventario, caja_nombre_combinada))
+                        printf("El nombre de la caja combinada ya existe. Intente de nuevo.\n");
+
+                caja_t *aux = inventario_combinar_cajas(inventario, caja1_nombre, caja2_nombre, caja_nombre_combinada);
+                if (!aux)
+                        printf("No se pudo cargar exitosamente la caja combinada.\n");
                 return;
         }
 
         if (opcion == 'd' || opcion == 'D')
         {
+                printf("Ingresar nombre de la caja a listar: \n");
+                char caja_nombre[50];
+                int result = scanf("%s", caja_nombre);
+                if (result != 1 || !inventario_contiene_caja(inventario, caja_nombre))
+                {
+                        printf("No existe tal caja.\n");
+                        return;
+                }
+                inventario_recorrer_caja(inventario, caja_nombre, imprimir_pokemon);
                 return;
         }
 
