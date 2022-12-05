@@ -20,12 +20,43 @@ struct _pokemon_en_caja
 {
         int cajas_contedoras;
         char pokemon_nombre[50];
-        // funcion por cada pokemon?
 };
 
 // ------------------ DEFINICION DE FUNCIONES PRIVADAS ------------------ //
 
 // ------------------ DECLARACION DE FUNCIONES PRIVADAS ------------------ //
+
+bool por_cada_caja(const char *clave, void *valor, void *aux)
+{
+        caja_t *caja = (caja_t *)valor;
+
+        int i = 0;
+        bool pokemon_esta_caja = false;
+
+        struct _pokemon_en_caja *pokemon_en_caja =
+            (struct _pokemon_en_caja *)aux;
+        while (i < caja_cantidad(caja) && !pokemon_esta_caja)
+        {
+                pokemon_t *pokemon = caja_obtener_pokemon(caja, i);
+                if (strcmp(pokemon_nombre(pokemon),
+                           pokemon_en_caja->pokemon_nombre) == 0)
+                {
+                        pokemon_esta_caja = true;
+                        (pokemon_en_caja->cajas_contedoras)++;
+                        printf("Caja %s, contiene al pokemon %s.\n", clave,
+                               pokemon_en_caja->pokemon_nombre);
+                }
+                i++;
+        }
+
+        return true;
+}
+
+bool destruir(const char *clave, void *valor, void *aux)
+{
+        caja_destruir((caja_t *)valor);
+        return true;
+}
 
 // ------------------ DECLARACION DE FUNCIONES PUBLICAS ------------------ //
 
@@ -116,34 +147,6 @@ void inventario_recorrer_caja(inventario_t *inventario,
         caja_recorrer(caja, funcion);
 }
 
-void por_cada_pokemon(pokemon_t *pokemon)
-{
-}
-
-bool por_cada_caja(const char *clave, void *valor, void *aux)
-{
-        caja_t *caja = (caja_t *)valor;
-
-        int i = 0;
-        bool pokemon_esta_caja = false;
-
-        struct _pokemon_en_caja *pokemon_en_caja = (struct _pokemon_en_caja *)aux;
-        while (i < caja_cantidad(caja) && !pokemon_esta_caja)
-        {
-                pokemon_t *pokemon = caja_obtener_pokemon(caja, i);
-                if (strcmp(pokemon_nombre(pokemon), pokemon_en_caja->pokemon_nombre) == 0)
-                {
-                        pokemon_esta_caja = true;
-                        (pokemon_en_caja->cajas_contedoras)++;
-                        printf("Caja %s, contiene al pokemon %s.\n", clave, pokemon_en_caja->pokemon_nombre);
-                        // se podria agregar a un hash la caja que contiene al pokemon
-                }
-                i++;
-        }
-
-        return true;
-}
-
 int inventario_buscar_pokemon(inventario_t *inventario,
                               const char *pokemon_nombre)
 {
@@ -154,12 +157,6 @@ int inventario_buscar_pokemon(inventario_t *inventario,
         hash_con_cada_clave(inventario->inventario_hash, por_cada_caja, &pokemon_en_caja);
 
         return pokemon_en_caja.cajas_contedoras;
-}
-
-bool destruir(const char *clave, void *valor, void *aux)
-{
-        caja_destruir((caja_t *)valor);
-        return true;
 }
 
 void inventario_destruir(inventario_t *inventario)
