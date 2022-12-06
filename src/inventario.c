@@ -85,6 +85,14 @@ inventario_t *inventario_cargar_caja(inventario_t *inventario,
         return inventario;
 }
 
+size_t inventario_cantidad_cajas(inventario_t *inventario)
+{
+        if (!inventario)
+                return 0;
+
+        return hash_cantidad(inventario->inventario_hash);
+}
+
 caja_t *inventario_combinar_cajas(inventario_t *inventario,
                                   const char *caja1_nombre,
                                   const char *caja2_nombre,
@@ -96,11 +104,14 @@ caja_t *inventario_combinar_cajas(inventario_t *inventario,
         if (!caja1_nombre || !caja2_nombre || !caja_nombre_combinada)
                 return NULL;
 
-        if (strcmp(caja1_nombre, caja2_nombre) == 0)
+        if ((strcmp(caja1_nombre, caja2_nombre) == 0) ||
+            (strcmp(caja1_nombre, caja_nombre_combinada) == 0) ||
+            (strcmp(caja_nombre_combinada, caja2_nombre) == 0))
                 return NULL;
 
         if (!hash_contiene(inventario->inventario_hash, caja1_nombre) ||
-            !hash_contiene(inventario->inventario_hash, caja2_nombre))
+            !hash_contiene(inventario->inventario_hash, caja2_nombre) ||
+            hash_contiene(inventario->inventario_hash, caja_nombre_combinada))
                 return NULL;
 
         caja_t *caja_combinada = caja_combinar(
@@ -150,6 +161,9 @@ void inventario_recorrer_caja(inventario_t *inventario,
 int inventario_buscar_pokemon(inventario_t *inventario,
                               const char *pokemon_nombre)
 {
+        if (!inventario || !pokemon_nombre)
+                return 0;
+
         struct _pokemon_en_caja pokemon_en_caja;
         strcpy(pokemon_en_caja.pokemon_nombre, pokemon_nombre);
         pokemon_en_caja.cajas_contedoras = 0;

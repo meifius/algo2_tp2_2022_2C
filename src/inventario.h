@@ -41,6 +41,12 @@ void inventario_con_cada_caja(inventario_t *inventario,
                               void *aux);
 
 /*
+Devuelve la cantidad de cajas que posee el inventario.
+En caso de un inventario nulo devolvera 0.
+ */
+size_t inventario_cantidad_cajas(inventario_t *inventario);
+
+/*
 Verifica si el el nombre de una caja esta en el inventario.
 Devuelve true si el inventario contiene una caja almacenado con la
 nombre dado o false en caso contrario (o en caso de error).

@@ -71,11 +71,6 @@ void comando_mostrar_inventario(inventario_t *inventario)
         return;
 }
 
-void buscar_caja(inventario_t *inventario, const char *pokemon_nombre)
-{
-        // ha
-}
-
 void comando_carga_otra_caja(inventario_t *inventario)
 {
         printf("Ingresar nombre del archivo a cargar: \n");
@@ -218,11 +213,6 @@ int main(int argc, char *argv[])
         }
 
         inventario_destruir(inventario);
-
-        // caja_destruir(caja);
-        // caja_destruir(caja1);
-        // caja_destruir(caja2);
-        // caja_destruir(caja_combinada);
 
         return OK;
 }
