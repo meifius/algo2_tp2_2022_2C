@@ -30,7 +30,8 @@ void menu_imprimir()
         printf("------------\n");
 }
 
-void menu_cargar_caja(inventario_t *inventario, char *caja_nombre, int *cajas_cantidad_cargados)
+void menu_cargar_caja(inventario_t *inventario, char *caja_nombre,
+                      int *cajas_cantidad_cargados)
 {
         printf("Cargando caja: %s\n", caja_nombre);
 
@@ -40,20 +41,24 @@ void menu_cargar_caja(inventario_t *inventario, char *caja_nombre, int *cajas_ca
                 printf("Error al cargar la caja %s\n", caja_nombre);
         else
         {
-                inventario_t *aux = inventario_cargar_caja(inventario, caja_nombre, caja_i);
+                inventario_t *aux =
+                    inventario_cargar_caja(inventario, caja_nombre, caja_i);
                 if (!aux)
-                        printf("Error al cargar la caja al inventario %s\n", caja_nombre);
+                        printf("Error al cargar la caja al inventario %s\n",
+                               caja_nombre);
                 else
                         (*cajas_cantidad_cargados)++;
         }
 }
 
-int inventario_cargar_inicialmente(inventario_t *inventario, int tope_nombres, char *nombres_cajas[])
+int inventario_cargar_inicialmente(inventario_t *inventario, int tope_nombres,
+                                   char *nombres_cajas[])
 {
         int cajas_cantidad_cargados = 0;
         for (int i = 1; i < tope_nombres; i++)
         {
-                menu_cargar_caja(inventario, nombres_cajas[i], &cajas_cantidad_cargados);
+                menu_cargar_caja(inventario, nombres_cajas[i],
+                                 &cajas_cantidad_cargados);
         }
 
         return cajas_cantidad_cargados;
@@ -61,7 +66,8 @@ int inventario_cargar_inicialmente(inventario_t *inventario, int tope_nombres, c
 
 bool imprimir_caja(const char *nombre_caja, void *caja, void *aux)
 {
-        printf("Caja: %s, cantidad pokemones: %i\n", nombre_caja, caja_cantidad(caja));
+        printf("Caja: %s, cantidad pokemones: %i\n", nombre_caja,
+               caja_cantidad(caja));
         return true;
 }
 
@@ -79,7 +85,8 @@ void comando_carga_otra_caja(inventario_t *inventario)
         printf("Ingreso caja con nombre: %s\n", caja_nombre);
         if (result != 1 || inventario_contiene_caja(inventario, caja_nombre))
         {
-                printf("Ya existe una caja con el mismo nombre: %s\n", caja_nombre);
+                printf("Ya existe una caja con el mismo nombre: %s\n",
+                       caja_nombre);
                 return;
         }
         int caja_cantidad_cargados = 0;
@@ -111,7 +118,8 @@ void comando_combinar_cajas(inventario_t *inventario)
         printf("Ingresar nombre que tendra el resultado de combinar las cajas.\n");
         char caja_nombre_combinada[50];
         result = scanf("%s", caja_nombre_combinada);
-        if (result != 1 || inventario_contiene_caja(inventario, caja_nombre_combinada))
+        if (result != 1 || inventario_contiene_caja(inventario,
+                                                    caja_nombre_combinada))
                 printf("El nombre de la caja combinada ya existe. Intente de nuevo.\n");
 
         caja_t *caja_combinada =
@@ -120,7 +128,8 @@ void comando_combinar_cajas(inventario_t *inventario)
         if (!caja_combinada)
                 printf("No se pudo cargar exitosamente al sistema la caja combinada.\n");
 
-        int pokemones_guardados = caja_guardar_archivo(caja_combinada, caja_nombre_combinada);
+        int pokemones_guardados = caja_guardar_archivo(caja_combinada,
+                                                       caja_nombre_combinada);
         if (pokemones_guardados <= 0)
                 printf("No se pudo guardar exitosamente en un archivo la caja combinada.\n");
 }
@@ -195,7 +204,8 @@ void menu_opciones(inventario_t *inventario, char opcion, bool *hay_que_salir)
 int main(int argc, char *argv[])
 {
         inventario_t *inventario = inventario_crear(5);
-        int cajas_cargadas = inventario_cargar_inicialmente(inventario, argc, argv);
+        int cajas_cargadas = inventario_cargar_inicialmente(inventario,
+                                                            argc, argv);
         printf("Cajas cargadas: %i\n", cajas_cargadas);
 
         if (cajas_cargadas < CAJAS_MINIMAS)

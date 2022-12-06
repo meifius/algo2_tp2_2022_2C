@@ -35,12 +35,10 @@ bool por_cada_caja(const char *clave, void *valor, void *aux)
 
         struct _pokemon_en_caja *pokemon_en_caja =
             (struct _pokemon_en_caja *)aux;
-        while (i < caja_cantidad(caja) && !pokemon_esta_caja)
-        {
+        while (i < caja_cantidad(caja) && !pokemon_esta_caja) {
                 pokemon_t *pokemon = caja_obtener_pokemon(caja, i);
                 if (strcmp(pokemon_nombre(pokemon),
-                           pokemon_en_caja->pokemon_nombre) == 0)
-                {
+                           pokemon_en_caja->pokemon_nombre) == 0) {
                         pokemon_esta_caja = true;
                         (pokemon_en_caja->cajas_contedoras)++;
                         printf("Caja %s, contiene al pokemon %s.\n", clave,
